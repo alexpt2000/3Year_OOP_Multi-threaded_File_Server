@@ -24,6 +24,7 @@ public class ClientConnection {
 	ClientConnection() {
 	}
 
+
 	void run() throws Throwable {
 		clientInput = new Scanner(System.in);
 		Context ctx = new Context();
