@@ -5,30 +5,52 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
+import ie.gmit.sw.server.*;
+
 public class RequestLogger implements Runnable {
 
-	private BlockingQueue q;
+	private BlockingQueue<Request> queue;
 	private FileWriter fw;
+	Request r = null;
+	boolean keepRunning = true;
 
-	public void Requestloger(BlockingQueue q) throws IOException {
-		this.q = q;
+	public RequestLogger(BlockingQueue<Request> queue) throws IOException {
+		this.queue = queue;
 		fw = new FileWriter(new File("log.txt"));
 	}
 
+
 	public void run() {
-		boolean keepRunning = true;
 
-		while(keepRunning ){
 
-			Request r = q.take();
+		while (keepRunning) {
 
-			if(r instanceof PoisonRequest)
-			{
-				keepRunning = false;
+			System.out.println("Print Run Method");
+
+
+			try {
+				r = queue.take();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-			fw.write(r.toString() + "\n");
+//
+//			if (r instanceof PoisonRequest) {
+//				keepRunning = false;
+//			}
+
+			try {
+				fw.write(r.toString() + "\n");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+
+		try {
 			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+	}
 
 }

@@ -43,4 +43,11 @@ public class Request implements Serializable {
 		this.date = date;
 	}
 
+
+	public void logging(String command, String host, Date date){
+		this.command = command;
+		this.host = host;
+		this.date = date;
+	}
+
 }
