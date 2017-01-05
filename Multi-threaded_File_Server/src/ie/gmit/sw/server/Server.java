@@ -13,7 +13,7 @@ public class Server {
 	private static ServerSocket m_ServerSocket;
 
 	public static void main(String[] args) throws Exception {
-		m_ServerSocket = new ServerSocket(7777, 10000);
+		m_ServerSocket = new ServerSocket(Integer.parseInt(args[0]), 10000);
 
 		BlockingQueue<Request> queue = new ArrayBlockingQueue<>(7);
 
@@ -22,7 +22,7 @@ public class Server {
 		int id = 0;
 		while (true) {
 			Socket clientSocket = m_ServerSocket.accept();
-			ClientServiceThread cliThread = new ClientServiceThread(clientSocket, id++);
+			ClientServiceThread cliThread = new ClientServiceThread(clientSocket, id++, args[1]);
 
 			cliThread.start();
 

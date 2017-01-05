@@ -16,6 +16,7 @@ import ie.gmit.sw.logger.Request;
 public class ClientServiceThread extends Thread {
 	Socket clientSocket;
 	String message;
+	String pathFile = "";
 	int clientID = 0;
 	boolean running = true;
 	ObjectOutputStream out;
@@ -23,9 +24,10 @@ public class ClientServiceThread extends Thread {
 
 
 
-	ClientServiceThread(Socket s, int i) {
+	ClientServiceThread(Socket s, int i, String args) {
 		clientSocket = s;
 		clientID = i;
+		pathFile = args;
 	}
 
 	void sendMessage(String msg) {
@@ -57,7 +59,7 @@ public class ClientServiceThread extends Thread {
 
 					if (message.compareTo("2") == 0) {
 
-						File[] files = new File("/serverFiles").listFiles();
+						File[] files = new File(pathFile).listFiles();
 						List<String> results = new ArrayList<String>();
 
 						Date dateNow = new Date();
