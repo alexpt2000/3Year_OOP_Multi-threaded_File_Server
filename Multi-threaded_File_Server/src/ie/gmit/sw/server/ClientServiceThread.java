@@ -1,9 +1,16 @@
 package ie.gmit.sw.server;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +21,9 @@ import java.util.concurrent.BlockingQueue;
 import ie.gmit.sw.logger.Request;
 
 public class ClientServiceThread extends Thread {
+	
+	private BufferedReader inFile = null;
+	
 	Socket clientSocket;
 	String message;
 	String pathFile = "";
@@ -47,6 +57,8 @@ public class ClientServiceThread extends Thread {
 			in = new ObjectInputStream(clientSocket.getInputStream());
 			System.out.println("Accepted Client : ID - " + clientID + " : Address - "
 					+ clientSocket.getInetAddress().getHostName());
+			
+			inFile = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
 			boolean finish = false;
 
@@ -81,6 +93,17 @@ public class ClientServiceThread extends Thread {
 					}
 
 					if (message.compareTo("3") == 0) {
+						
+						
+						sendMessage("\nEnter the file name.: ");
+						
+						message = (String) in.readObject();
+						
+                        String outGoingFileName = message;
+
+                        while ((outGoingFileName = inFile.readLine()) != null) {
+                            sendFile(outGoingFileName);
+                        }
 
 					}
 
@@ -102,4 +125,41 @@ public class ClientServiceThread extends Thread {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	//https://www.mkyong.com/java/how-to-construct-a-file-path-in-java/
+	//http://stackoverflow.com/questions/25772640/java-socket-multithread-file-transfer
+	
+	public void sendFile(String fileName) {
+        try {
+
+            File myFile = new File(pathFile + fileName);
+            byte[] mybytearray = new byte[(int) myFile.length()];
+
+            FileInputStream fis = new FileInputStream(myFile);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+
+            DataInputStream dis = new DataInputStream(bis);
+            dis.readFully(mybytearray, 0, mybytearray.length);
+
+            OutputStream os = clientSocket.getOutputStream();
+
+            DataOutputStream dos = new DataOutputStream(os);
+            dos.writeUTF(myFile.getName());
+            dos.writeLong(mybytearray.length);
+            dos.write(mybytearray, 0, mybytearray.length);
+            dos.flush();
+
+            System.out.println("File " + fileName + " send to client.");
+
+        } catch (Exception e) {
+            System.err.println("Error! " + e);
+        }
+    }
+	
+	
+	
+	
+	
+	
 }

@@ -5,4 +5,4 @@ jar -cf oop.jar *
 java -cp oop.jar ie.gmit.sw.client.Client
 
 ***To Run the Server
-java -cp oop.jar ie.gmit.sw.server.Server
+java -cp oop.jar ie.gmit.sw.server.Server 7777 /serverFiles

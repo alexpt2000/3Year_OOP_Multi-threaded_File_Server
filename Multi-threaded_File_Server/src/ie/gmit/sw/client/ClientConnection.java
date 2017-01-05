@@ -9,7 +9,7 @@ import ie.gmit.sw.client.config.Parse;
 
 public class ClientConnection {
 
-	Socket requestSocket;
+	static Socket requestSocket;
 	ObjectOutputStream out;
 	ObjectInputStream in;
 	String op = "";
@@ -77,6 +77,17 @@ public class ClientConnection {
 			}
 
 			if (op.compareTo("3") == 0) {
+				
+				sendMessage("3");
+
+				clientResonse = (String)in.readObject();
+				System.out.println(clientResonse);
+				
+				op = clientInput.next();
+				
+				sendMessage(op);
+				
+				receiveFile(op);
 
 			}
 
@@ -96,5 +107,35 @@ public class ClientConnection {
 			ioException.printStackTrace();
 		}
 	}
+	
+	
+	
+    public static void receiveFile(String fileName) {
+        try {
+            int bytesRead;
+            InputStream in = requestSocket.getInputStream();
+
+            DataInputStream clientData = new DataInputStream(in);
+
+            fileName = clientData.readUTF();
+            OutputStream output = new FileOutputStream(
+                    ("received_from_server_" + fileName));
+            long size = clientData.readLong();
+            byte[] buffer = new byte[1024];
+            while (size > 0
+                    && (bytesRead = clientData.read(buffer, 0,
+                            (int) Math.min(buffer.length, size))) != -1) {
+                output.write(buffer, 0, bytesRead);
+                size -= bytesRead;
+            }
+            output.flush();
+
+            System.out.println("File " + fileName + " received from Server.");
+        } catch (IOException ex) {
+
+        }
+    }
+	
+	
 
 }
