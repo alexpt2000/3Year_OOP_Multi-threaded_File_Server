@@ -68,6 +68,10 @@ public class RequestLogger implements Runnable {
 			// http://stackoverflow.com/questions/15489067/cant-stop-producer-consumer-threads-with-poison-pill
 			// http://stackoverflow.com/questions/8974638/blocking-queue-and-multi-threaded-consumer-how-to-know-when-to-stop
 			
+			// http://codereview.stackexchange.com/questions/120059/executor-service-with-blocking-queue
+			// https://coderanch.com/t/614729/java/Producer-Consumer-Thread
+			
+			
 			// I need implement PoisonRequest
 			
 			// if (r instanceof PoisonRequest) {
