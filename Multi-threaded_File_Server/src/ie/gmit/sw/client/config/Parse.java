@@ -37,7 +37,7 @@ public class Parse {
 			// Read the file name
 			File inputFile = new File(ctx.getConfFile());
 			
-			// Reading paramets insid XML file 
+			// Reading parametrs inside XML file 
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(inputFile);
