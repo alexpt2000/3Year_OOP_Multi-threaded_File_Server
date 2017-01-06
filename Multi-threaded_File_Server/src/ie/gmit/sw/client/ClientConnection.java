@@ -24,14 +24,13 @@ public class ClientConnection {
 	ClientConnection() {
 	}
 
-
 	void run() throws Throwable {
 		clientInput = new Scanner(System.in);
 		Context ctx = new Context();
 		Parse cp = new Parse(ctx);
 		cp.init();
 
-		//System.out.println(op);
+		// System.out.println(op);
 
 		// 3: Communicating with the server
 		do {
@@ -47,14 +46,15 @@ public class ClientConnection {
 
 			System.out.println("---------------------------");
 
-//			// Receive MSG from the server
-//			op = (String) in.readObject();
-//			System.out.println(op);
+			// // Receive MSG from the server
+			// op = (String) in.readObject();
+			// System.out.println(op);
 
 			if (op.compareTo("1") == 0) {
 				// 1. creating a socket to connect to the server
 				ipaddress = ctx.getHost();
 				port = ctx.getPort();
+				downloadDir = ctx.getDownloadDir();
 
 				requestSocket = new Socket(ipaddress, port);
 
@@ -66,27 +66,27 @@ public class ClientConnection {
 				in = new ObjectInputStream(requestSocket.getInputStream());
 			}
 
-
 			if (op.compareTo("2") == 0) {
 
 				sendMessage("2");
 
-				clientResonse = (String)in.readObject();
+				clientResonse = (String) in.readObject();
 				System.out.println(clientResonse);
 
 			}
 
 			if (op.compareTo("3") == 0) {
-				
+
 				sendMessage("3");
 
-				clientResonse = (String)in.readObject();
+				clientResonse = (String) in.readObject();
 				System.out.println(clientResonse);
-				
+
 				op = clientInput.next();
-				
+
 				sendMessage(op);
-				
+
+
 				receiveFile(op);
 
 			}
@@ -107,35 +107,29 @@ public class ClientConnection {
 			ioException.printStackTrace();
 		}
 	}
-	
-	
-	
-    public static void receiveFile(String fileName) {
-        try {
-            int bytesRead;
-            InputStream in = requestSocket.getInputStream();
 
-            DataInputStream clientData = new DataInputStream(in);
+	public static void receiveFile(String fileName) {
+		try {
+			int bytesRead;
+			InputStream in = requestSocket.getInputStream();
 
-            fileName = clientData.readUTF();
-            OutputStream output = new FileOutputStream(
-                    ("received_from_server_" + fileName));
-            long size = clientData.readLong();
-            byte[] buffer = new byte[1024];
-            while (size > 0
-                    && (bytesRead = clientData.read(buffer, 0,
-                            (int) Math.min(buffer.length, size))) != -1) {
-                output.write(buffer, 0, bytesRead);
-                size -= bytesRead;
-            }
-            output.flush();
+			DataInputStream clientData = new DataInputStream(in);
 
-            System.out.println("File " + fileName + " received from Server.");
-        } catch (IOException ex) {
+			fileName = clientData.readUTF();
+			OutputStream output = new FileOutputStream(fileName);
+			long size = clientData.readLong();
+			byte[] buffer = new byte[1024];
 
-        }
-    }
-	
-	
+			while (size > 0 && (bytesRead = clientData.read(buffer, 0, (int) Math.min(buffer.length, size))) != -1) {
+				output.write(buffer, 0, bytesRead);
+				size -= bytesRead;
+			}
+			output.flush();
+
+			System.out.println("File " + fileName + " received from Server.");
+		} catch (IOException ex) {
+
+		}
+	}
 
 }

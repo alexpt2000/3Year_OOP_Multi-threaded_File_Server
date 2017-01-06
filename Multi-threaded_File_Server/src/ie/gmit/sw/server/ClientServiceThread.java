@@ -17,13 +17,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ForkJoinPool;
+
+import javax.swing.plaf.FontUIResource;
 
 import ie.gmit.sw.logger.Request;
 
 public class ClientServiceThread extends Thread {
-	
-	private BufferedReader inFile = null;
-	
+
+
+
 	Socket clientSocket;
 	String message;
 	String pathFile = "";
@@ -31,8 +34,7 @@ public class ClientServiceThread extends Thread {
 	boolean running = true;
 	ObjectOutputStream out;
 	ObjectInputStream in;
-
-
+	private BufferedReader inFile = null;
 
 	ClientServiceThread(Socket s, int i, String args) {
 		clientSocket = s;
@@ -57,7 +59,7 @@ public class ClientServiceThread extends Thread {
 			in = new ObjectInputStream(clientSocket.getInputStream());
 			System.out.println("Accepted Client : ID - " + clientID + " : Address - "
 					+ clientSocket.getInetAddress().getHostName());
-			
+
 			inFile = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
 			boolean finish = false;
@@ -76,7 +78,9 @@ public class ClientServiceThread extends Thread {
 
 						Date dateNow = new Date();
 
-						//queue.put(new Request("List Files", clientSocket.getInetAddress().getHostName(), dateNow));
+						// queue.put(new Request("List Files",
+						// clientSocket.getInetAddress().getHostName(),
+						// dateNow));
 
 						for (File file : files) {
 							if (file.isFile()) {
@@ -93,17 +97,21 @@ public class ClientServiceThread extends Thread {
 					}
 
 					if (message.compareTo("3") == 0) {
-						
-						
-						sendMessage("\nEnter the file name.: ");
-						
-						message = (String) in.readObject();
-						
-                        String outGoingFileName = message;
 
-                        while ((outGoingFileName = inFile.readLine()) != null) {
-                            sendFile(outGoingFileName);
-                        }
+						sendMessage("\nEnter the file name.: ");
+
+						message = (String) in.readObject();
+
+						String outGoingFileName = pathFile + "/" + message;
+
+
+
+						//while ((outGoingFileName = inFile.readLine()) != null) {
+							sendFile(outGoingFileName);
+						//}
+
+
+
 
 					}
 
@@ -125,41 +133,35 @@ public class ClientServiceThread extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	//https://www.mkyong.com/java/how-to-construct-a-file-path-in-java/
-	//http://stackoverflow.com/questions/25772640/java-socket-multithread-file-transfer
-	
+
+
+	// http://stackoverflow.com/questions/25772640/java-socket-multithread-file-transfer
+
 	public void sendFile(String fileName) {
-        try {
+		try {
 
-            File myFile = new File(pathFile + fileName);
-            byte[] mybytearray = new byte[(int) myFile.length()];
+			File myFile = new File(fileName);
+			byte[] mybytearray = new byte[(int) myFile.length()];
 
-            FileInputStream fis = new FileInputStream(myFile);
-            BufferedInputStream bis = new BufferedInputStream(fis);
+			FileInputStream fis = new FileInputStream(myFile);
+			BufferedInputStream bis = new BufferedInputStream(fis);
 
-            DataInputStream dis = new DataInputStream(bis);
-            dis.readFully(mybytearray, 0, mybytearray.length);
+			DataInputStream dis = new DataInputStream(bis);
+			dis.readFully(mybytearray, 0, mybytearray.length);
 
-            OutputStream os = clientSocket.getOutputStream();
+			OutputStream os = clientSocket.getOutputStream();
 
-            DataOutputStream dos = new DataOutputStream(os);
-            dos.writeUTF(myFile.getName());
-            dos.writeLong(mybytearray.length);
-            dos.write(mybytearray, 0, mybytearray.length);
-            dos.flush();
+			DataOutputStream dos = new DataOutputStream(os);
+			dos.writeUTF(myFile.getName());
+			dos.writeLong(mybytearray.length);
+			dos.write(mybytearray, 0, mybytearray.length);
+			dos.flush();
 
-            System.out.println("File " + fileName + " send to client.");
+			System.out.println("File " + fileName + " send to client.");
 
-        } catch (Exception e) {
-            System.err.println("Error! " + e);
-        }
-    }
-	
-	
-	
-	
-	
-	
+		} catch (Exception e) {
+			System.err.println("Error! " + e);
+		}
+	}
+
 }
