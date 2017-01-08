@@ -46,10 +46,13 @@ public class ClientServiceThread extends Thread {
 	/**
 	 * Instantiates a new client service thread.
 	 *
-	 * @param s the Type socket number
-	 * @param queue 
-	 * @param i the Int ID for eache conection
-	 * @param args the String takes args (files location)
+	 * @param s
+	 *            the Type socket number
+	 * @param queue
+	 * @param i
+	 *            the Int ID for eache conection
+	 * @param args
+	 *            the String takes args (files location)
 	 */
 	ClientServiceThread(Socket s, BlockingQueue<Request> queue, int i, String args) {
 		clientSocket = s;
@@ -61,7 +64,8 @@ public class ClientServiceThread extends Thread {
 	/**
 	 * Send message to client.
 	 *
-	 * @param msg String message
+	 * @param msg
+	 *            String message
 	 */
 	void sendMessage(String msg) {
 		try {
@@ -72,7 +76,6 @@ public class ClientServiceThread extends Thread {
 			ioException.printStackTrace();
 		}
 	}
-
 
 	public void run() {
 		try {
@@ -85,7 +88,7 @@ public class ClientServiceThread extends Thread {
 			inFile = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
 			boolean finish = false;
-			
+
 			Date dateNow = new Date();
 			queue.put(new Request("[INFO] Connecting", clientSocket.getInetAddress().getHostName(), dateNow));
 
@@ -106,8 +109,9 @@ public class ClientServiceThread extends Thread {
 						// queue.put(new Request("List Files",
 						// clientSocket.getInetAddress().getHostName(),
 						// dateNow));
-						
-						queue.put(new Request("[INFO] Listing files", clientSocket.getInetAddress().getHostName(), dateNow));
+
+						queue.put(new Request("[INFO] Listing files", clientSocket.getInetAddress().getHostName(),
+								dateNow));
 
 						for (File file : files) {
 							if (file.isFile()) {
@@ -128,9 +132,10 @@ public class ClientServiceThread extends Thread {
 						sendMessage("\nEnter the file name.: ");
 
 						message = (String) in.readObject();
-						
+
 						dateNow = new Date();
-						queue.put(new Request("[INFO] " + message, clientSocket.getInetAddress().getHostName(), dateNow));
+						queue.put(
+								new Request("[INFO] " + message, clientSocket.getInetAddress().getHostName(), dateNow));
 
 						String outGoingFileName = pathFile + "/" + message;
 
@@ -155,19 +160,26 @@ public class ClientServiceThread extends Thread {
 
 			System.out.println(
 					"Ending Client : ID - " + clientID + " : Address - " + clientSocket.getInetAddress().getHostName());
+
+			dateNow = new Date();
+			queue.put(new Request("[INFO] End conection", clientSocket.getInetAddress().getHostName(), dateNow));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	// http://stackoverflow.com/questions/25772640/java-socket-multithread-file-transfer
-
 	/**
 	 * Send file to client
 	 *
-	 * @param fileName String file name
+	 * @param fileName
+	 *            String file name
+	 * @throws InterruptedException
 	 */
-	public void sendFile(String fileName) {
+	public void sendFile(String fileName) throws InterruptedException {
+
+		Date dateNow = new Date();
+
 		try {
 
 			File myFile = new File(fileName);
@@ -190,7 +202,10 @@ public class ClientServiceThread extends Thread {
 			System.out.println("File " + fileName + " send to client.");
 
 		} catch (Exception e) {
-			System.err.println("Error! " + e);
+			queue.put(new Request("[ERROR] file " + fileName + " does not exist",
+					clientSocket.getInetAddress().getHostName(), dateNow));
+			// System.err.println("Error! " + e);
+
 		}
 	}
 

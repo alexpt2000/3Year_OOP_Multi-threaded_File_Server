@@ -123,7 +123,7 @@ public class ClientConnection {
 				sendMessage(op);
 				
 				//receiving file
-				receiveFile(op);
+				receiveFile(op, downloadDir);
 
 			}
 
@@ -155,8 +155,10 @@ public class ClientConnection {
 	 *
 	 * @param fileName
 	 *            the file name
+	 * @param downloadDir 
 	 */
-	public static void receiveFile(String fileName) {
+	public static void receiveFile(String fileName, String downloadDir) {
+		
 		try {
 			int bytesRead;
 			InputStream in = requestSocket.getInputStream();
@@ -164,7 +166,7 @@ public class ClientConnection {
 			DataInputStream clientData = new DataInputStream(in);
 
 			fileName = clientData.readUTF();
-			OutputStream output = new FileOutputStream(fileName);
+			OutputStream output = new FileOutputStream(downloadDir + fileName);
 			long size = clientData.readLong();
 			byte[] buffer = new byte[1024];
 
