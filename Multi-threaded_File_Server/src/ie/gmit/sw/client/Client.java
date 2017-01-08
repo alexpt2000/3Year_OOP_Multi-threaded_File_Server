@@ -18,8 +18,7 @@ public class Client {
 	 * Run - creates a new thread for client
 	 *
 	 * @param args No takes args
-	 * @throws Throwable
-
+	 *
 	 */
 	public static void main(String[] args) throws Throwable{
 

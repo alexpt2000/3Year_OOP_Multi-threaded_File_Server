@@ -27,7 +27,7 @@ public class RequestLogger implements Runnable {
 	/**
 	 * Instantiates a new request logger.
 	 *
-	 * @param queue Get BlockingQueue<Request>
+	 * @param queue Get BlockingQueue
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public RequestLogger(BlockingQueue<Request> queue) throws IOException {

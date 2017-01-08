@@ -7,7 +7,7 @@ import org.w3c.dom.Document;
 
 /**
  * Read values from XML file and pass true an object
- * 
+ *
  * @author Alexander Souza
  * @version 1.0
  * @since 29/12/2016
@@ -20,7 +20,7 @@ public class Parse {
 	/**
 	 * Instantiates a new parses the.
 	 *
-	 * @param ctx the ctx will receive the bean Context, contains Username, Host, port and download Directory.  
+	 * @param ctx the ctx will receive the bean Context, contains Username, Host, port and download Directory.
 	 */
 	public Parse(Context ctx) {
 		this.ctx = ctx;
@@ -36,8 +36,8 @@ public class Parse {
 
 			// Read the file name
 			File inputFile = new File(ctx.getConfFile());
-			
-			// Reading parametrs inside XML file 
+
+			// Reading parametrs inside XML file
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(inputFile);
@@ -48,6 +48,8 @@ public class Parse {
 			ctx.setPort(Integer
 					.parseInt(doc.getDocumentElement().getElementsByTagName("server-port").item(0).getTextContent()));
 			ctx.setDownloadDir(doc.getDocumentElement().getElementsByTagName("download-dir").item(0).getTextContent());
+
+
 
 		} catch (Exception e) {
 			e.printStackTrace();

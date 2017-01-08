@@ -96,8 +96,3 @@ OP 1 - Create a new connection to the server.
 OP 2 - List the file list available for download.
 OP 3 - Introduction of file name to download.
 OP 4 - Terminates the connection to the server.
-
-
-
-
-

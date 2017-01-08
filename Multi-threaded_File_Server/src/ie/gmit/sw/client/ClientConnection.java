@@ -8,7 +8,9 @@ import ie.gmit.sw.client.config.Context;
 import ie.gmit.sw.client.config.Parse;
 
 /**
- * The Class ClientConnection.
+ *
+ * This java application is a multithreaded  server that listens to a specific port
+ * It has the ability to handle multiple client requests.
  *
  * @author Alexander Souza - G00317835
  * @version 1.0
@@ -21,11 +23,8 @@ public class ClientConnection {
 
 	ObjectOutputStream out;
 	ObjectInputStream in;
-
 	String op = "";
-
 	String clientResonse;
-
 	Scanner clientInput;
 
 	// Local variables to takes values from Context bean
@@ -41,10 +40,18 @@ public class ClientConnection {
 	}
 
 	/**
-	 * Run.
 	 *
-	 * @throws Throwable
-	 *             the throwable
+	 * Override method run to perform following functions:
+	 *
+	 * Menu on screen
+	 *
+	 * Interacts with server
+	 *
+	 * List Files
+	 *
+	 * Download files form server
+	 *
+	 *
 	 */
 	void run() throws Throwable {
 		clientInput = new Scanner(System.in);
@@ -156,9 +163,8 @@ public class ClientConnection {
 	/**
 	 * Receive file, from server
 	 *
-	 * @param fileName
-	 *            the file name
-	 * @param downloadDir
+	 * @param fileName from server
+	 * @param downloadDir files location
 	 */
 	public static void receiveFile(String fileName, String downloadDir) {
 

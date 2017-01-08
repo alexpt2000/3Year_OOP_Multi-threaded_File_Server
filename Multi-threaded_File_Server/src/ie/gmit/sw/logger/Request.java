@@ -8,7 +8,7 @@ import java.util.Date;
  * "global variables" to a Request.
  *
  * This is a "bean class", containing a constructor and accessor methods only.
- * 
+ *
  * @author Alexander Souza - G00317835
  * @version 1.0
  * @since 29/12/2016
@@ -94,19 +94,5 @@ public class Request implements Serializable {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-
-
-//	/**
-//	 * Logging.
-//	 *
-//	 * @param command Pass String Information type (Info, Error and Warning)
-//	 * @param host the host
-//	 * @param date the date
-//	 */
-//	public void logging(String command, String host, Date date){
-//		this.command = command;
-//		this.host = host;
-//		this.date = date;
-//	}
 
 }

@@ -24,7 +24,8 @@ import javax.swing.plaf.FontUIResource;
 import ie.gmit.sw.logger.Request;
 
 /**
- * Manage all client connections
+ * This java application is a multithreaded  server that listens to a specific port
+ * It has the ability to handle multiple client requests.
  *
  *
  * @author Alexander Souza - G00317835
@@ -47,13 +48,11 @@ public class ClientServiceThread extends Thread {
 	/**
 	 * Instantiates a new client service thread.
 	 *
-	 * @param s
-	 *            the Type socket number
+	 * @param s the Type socket number
 	 * @param queue
-	 * @param i
-	 *            the Int ID for eache conection
-	 * @param args
-	 *            the String takes args (files location)
+	 * @param i the Int ID for eache conection
+	 * @param args the String takes args (files location)
+	 *
 	 */
 	ClientServiceThread(Socket s, BlockingQueue<Request> queue, int i, String args) {
 		clientSocket = s;
@@ -65,8 +64,7 @@ public class ClientServiceThread extends Thread {
 	/**
 	 * Send message to client.
 	 *
-	 * @param msg
-	 *            String message
+	 * @param msg String message
 	 */
 	void sendMessage(String msg) {
 		try {
@@ -140,9 +138,8 @@ public class ClientServiceThread extends Thread {
 
 						String outGoingFileName = pathFile + "/" + message;
 
-						// while ((outGoingFileName = inFile.readLine()) !=
-						// null) {
-						sendFile(outGoingFileName);
+						//while ((outGoingFileName = inFile.readLine()) !=  null) {
+							sendFile(outGoingFileName);
 						// }
 
 					}
@@ -158,9 +155,6 @@ public class ClientServiceThread extends Thread {
 				}
 
 			} while (finish == false);
-
-//			System.out.println(
-//					"Ending Client : ID - " + clientID + " : Address - " + clientSocket.getInetAddress().getHostName());
 
 			System.out.println("\nEnding User.: " + userName + " - ID.: " + clientID + " - Address.: "
 					+ clientSocket.getInetAddress().getHostName() + "\n");
@@ -183,9 +177,7 @@ public class ClientServiceThread extends Thread {
 	/**
 	 * Send file to client
 	 *
-	 * @param fileName
-	 *            String file name
-	 * @throws InterruptedException
+	 * @param fileName String file name
 	 */
 	public void sendFile(String fileName) throws InterruptedException {
 
