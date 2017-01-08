@@ -9,6 +9,7 @@ package ie.gmit.sw.client;
  * @author Alexander Souza
  * @version 1.0
  * @since 29/12/2016
+ *
  */
 public class Client {
 
