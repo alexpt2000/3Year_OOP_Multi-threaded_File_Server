@@ -19,46 +19,39 @@ import java.util.concurrent.BlockingQueue;
 public class RequestLogger implements Runnable {
 
 	private BlockingQueue<Request> queue;
-	Request r = null;
+	
+	private final static PoisonRequest POISON = new PoisonRequest();
+	Request request = null;
 	boolean keepRunning = true;
 
 	/**
 	 * Instantiates a new request logger.
 	 *
-	 * @param queue
-	 *            the queue
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param queue Get BlockingQueue<Request> 
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public RequestLogger(BlockingQueue<Request> queue) throws IOException {
 		this.queue = queue;
 	}
 
 	public void run() {
-		
-
 
 		while (keepRunning) {
-			
 			FileWriter fw = null;
 			try {
 				fw = new FileWriter("log.txt", true);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter appendFileLog = new PrintWriter(bw);
 
-			System.out.println("Print Run Method");
-
 			try {
-				r = queue.take();
+				request = queue.take();
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			
 			
 			//**************************************************************************************************************************************************
 			
@@ -74,17 +67,18 @@ public class RequestLogger implements Runnable {
 			
 			// I need implement PoisonRequest
 			
-			// if (r instanceof PoisonRequest) {
-			// keepRunning = false;
-			// }
+			 if (request instanceof PoisonRequest) {
+				 keepRunning = false;
+			 }
 			
 			//**************************************************************************************************************************************************
 			
-			
+			// Set format for date and time
 			SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm aaa");
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMMM YYYY");
 			
-			appendFileLog.println(r.getCommand() + " requested by " + r.getHost() + " at "+ timeFormat.format(r.getDate()) + " on " + dateFormat.format(r.getDate()));
+			// Save in file
+			appendFileLog.println(request.getCommand() + " requested by " + request.getHost() + " at "+ timeFormat.format(request.getDate()) + " on " + dateFormat.format(request.getDate()));
 			
 			appendFileLog.close();
 			try {
@@ -93,10 +87,6 @@ public class RequestLogger implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
 		}
-
-
 	}
-
 }

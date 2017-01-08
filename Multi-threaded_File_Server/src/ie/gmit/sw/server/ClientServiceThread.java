@@ -105,11 +105,6 @@ public class ClientServiceThread extends Thread {
 						List<String> results = new ArrayList<String>();
 
 						dateNow = new Date();
-
-						// queue.put(new Request("List Files",
-						// clientSocket.getInetAddress().getHostName(),
-						// dateNow));
-
 						queue.put(new Request("[INFO] Listing files", clientSocket.getInetAddress().getHostName(),
 								dateNow));
 
@@ -166,6 +161,13 @@ public class ClientServiceThread extends Thread {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			Date dateNow = new Date();
+			try {
+				queue.put(new Request("[ERROR] Connection reset", clientSocket.getInetAddress().getHostName(), dateNow));
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			
 		}
 	}
 
@@ -202,7 +204,7 @@ public class ClientServiceThread extends Thread {
 			System.out.println("File " + fileName + " send to client.");
 
 		} catch (Exception e) {
-			queue.put(new Request("[ERROR] file " + fileName + " does not exist",
+			queue.put(new Request("[WARNING] file " + fileName + " does not exist",
 					clientSocket.getInetAddress().getHostName(), dateNow));
 			// System.err.println("Error! " + e);
 
