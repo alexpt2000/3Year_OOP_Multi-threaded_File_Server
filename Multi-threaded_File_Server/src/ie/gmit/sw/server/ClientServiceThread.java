@@ -25,8 +25,8 @@ import ie.gmit.sw.logger.Request;
 
 /**
  * Manage all client connections
- * 
- * 
+ *
+ *
  * @author Alexander Souza - G00317835
  * @version 1.0
  * @since 29/12/2016
@@ -36,6 +36,7 @@ public class ClientServiceThread extends Thread {
 	Socket clientSocket;
 	String message;
 	String pathFile = "";
+	String userName;
 	int clientID = 0;
 	boolean running = true;
 	ObjectOutputStream out;
@@ -82,8 +83,13 @@ public class ClientServiceThread extends Thread {
 			out = new ObjectOutputStream(clientSocket.getOutputStream());
 			out.flush();
 			in = new ObjectInputStream(clientSocket.getInputStream());
-			System.out.println("Accepted Client : ID - " + clientID + " : Address - "
-					+ clientSocket.getInetAddress().getHostName());
+
+			message = (String) in.readObject();
+
+			userName = message;
+
+			System.out.println("\nAccepted User.: " + userName + " - ID.: " + clientID + " - Address.: "
+					+ clientSocket.getInetAddress().getHostName() + "\n");
 
 			inFile = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
@@ -153,11 +159,14 @@ public class ClientServiceThread extends Thread {
 
 			} while (finish == false);
 
-			System.out.println(
-					"Ending Client : ID - " + clientID + " : Address - " + clientSocket.getInetAddress().getHostName());
+//			System.out.println(
+//					"Ending Client : ID - " + clientID + " : Address - " + clientSocket.getInetAddress().getHostName());
+
+			System.out.println("\nEnding User.: " + userName + " - ID.: " + clientID + " - Address.: "
+					+ clientSocket.getInetAddress().getHostName() + "\n");
 
 			dateNow = new Date();
-			queue.put(new Request("[INFO] End conection", clientSocket.getInetAddress().getHostName(), dateNow));
+			queue.put(new Request("[INFO] End connection", clientSocket.getInetAddress().getHostName(), dateNow));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,7 +176,7 @@ public class ClientServiceThread extends Thread {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			
+
 		}
 	}
 

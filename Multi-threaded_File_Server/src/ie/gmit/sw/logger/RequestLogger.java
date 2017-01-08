@@ -10,7 +10,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * This method will manage all actions using BLock queue saving within a LOG
  * file
- * 
+ *
  * @author Alexander Souza - G00317835
  * @version 1.0
  * @since 29/12/2016
@@ -19,7 +19,7 @@ import java.util.concurrent.BlockingQueue;
 public class RequestLogger implements Runnable {
 
 	private BlockingQueue<Request> queue;
-	
+
 	private final static PoisonRequest POISON = new PoisonRequest();
 	Request request = null;
 	boolean keepRunning = true;
@@ -27,7 +27,7 @@ public class RequestLogger implements Runnable {
 	/**
 	 * Instantiates a new request logger.
 	 *
-	 * @param queue Get BlockingQueue<Request> 
+	 * @param queue Get BlockingQueue<Request>
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public RequestLogger(BlockingQueue<Request> queue) throws IOException {
@@ -43,7 +43,7 @@ public class RequestLogger implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter appendFileLog = new PrintWriter(bw);
 
@@ -52,34 +52,28 @@ public class RequestLogger implements Runnable {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			
-			//**************************************************************************************************************************************************
-			
-			// Referencias Sobre POISON
-			
-			// https://dzone.com/articles/producers-and-consumers-part-3
-			// http://stackoverflow.com/questions/15489067/cant-stop-producer-consumer-threads-with-poison-pill
-			// http://stackoverflow.com/questions/8974638/blocking-queue-and-multi-threaded-consumer-how-to-know-when-to-stop
-			
-			// http://codereview.stackexchange.com/questions/120059/executor-service-with-blocking-queue
-			// https://coderanch.com/t/614729/java/Producer-Consumer-Thread
-			
-			
-			// I need implement PoisonRequest
-			
-			 if (request instanceof PoisonRequest) {
+
+
+			// keep in the queue so all workers stop
+			 if (request == POISON) {
+				 try {
+					queue.put(request);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				 keepRunning = false;
+			 	System.out.println("**** Confirme POISON ****");
 			 }
-			
-			//**************************************************************************************************************************************************
-			
+
+
+
 			// Set format for date and time
 			SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm aaa");
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMMM YYYY");
-			
+
 			// Save in file
 			appendFileLog.println(request.getCommand() + " requested by " + request.getHost() + " at "+ timeFormat.format(request.getDate()) + " on " + dateFormat.format(request.getDate()));
-			
+
 			appendFileLog.close();
 			try {
 				bw.close();

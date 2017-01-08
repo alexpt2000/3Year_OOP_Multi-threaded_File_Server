@@ -9,7 +9,7 @@ import ie.gmit.sw.client.config.Parse;
 
 /**
  * The Class ClientConnection.
- * 
+ *
  * @author Alexander Souza - G00317835
  * @version 1.0
  * @since 29/12/2016
@@ -48,14 +48,14 @@ public class ClientConnection {
 	 */
 	void run() throws Throwable {
 		clientInput = new Scanner(System.in);
-		
+
 		// Call Parse and Instantiates values from XML
 		Context ctx = new Context();
 		Parse cp = new Parse(ctx);
 		cp.init();
 
 		do {
-			
+
 			// Print Menu Option on Screen
 			System.out.println("\n---------------------------");
 			System.out.println("1. Connect to Server");
@@ -69,11 +69,12 @@ public class ClientConnection {
 
 			System.out.println("---------------------------");
 
-			
+
 			// 1. Connect to Server
 			if (op.compareTo("1") == 0) {
 
 				// 1. creating a socket to connect to the server
+				username = ctx.getUsername();
 				ipaddress = ctx.getHost();
 				port = ctx.getPort();
 				downloadDir = ctx.getDownloadDir();
@@ -87,23 +88,25 @@ public class ClientConnection {
 				out = new ObjectOutputStream(requestSocket.getOutputStream());
 				out.flush();
 				in = new ObjectInputStream(requestSocket.getInputStream());
+
+				sendMessage(username);
 			}
 
-			
+
 			// 2. Print File Listing
 			if (op.compareTo("2") == 0) {
-				
+
 				// Passing value to method sendMessage to delivery to the server
 				sendMessage("2");
-				
+
 				// Values from Server
 				clientResonse = (String) in.readObject();
-				
+
 				// Print a list of files from server
 				System.out.println(clientResonse);
 			}
 
-			
+
 			// 3. Download File
 			if (op.compareTo("3") == 0) {
 
@@ -112,7 +115,7 @@ public class ClientConnection {
 
 				// Values from Server
 				clientResonse = (String) in.readObject();
-				
+
 				// Printing question from server
 				System.out.println(clientResonse);
 
@@ -121,7 +124,7 @@ public class ClientConnection {
 
 				// Send back to server
 				sendMessage(op);
-				
+
 				//receiving file
 				receiveFile(op, downloadDir);
 
@@ -155,10 +158,10 @@ public class ClientConnection {
 	 *
 	 * @param fileName
 	 *            the file name
-	 * @param downloadDir 
+	 * @param downloadDir
 	 */
 	public static void receiveFile(String fileName, String downloadDir) {
-		
+
 		try {
 			int bytesRead;
 			InputStream in = requestSocket.getInputStream();
@@ -176,7 +179,7 @@ public class ClientConnection {
 			}
 			output.flush();
 
-			System.out.println("File " + fileName + " received from Server.");
+			System.out.println("\nFile " + fileName + " received from Server.");
 		} catch (IOException ex) {
 
 		}
